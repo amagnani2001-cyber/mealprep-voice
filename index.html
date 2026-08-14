@@ -10,8 +10,8 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            padding-top: 50px;
             background: #f5f5f5;
+            padding-top: 50px;
         }
 
         h1 {
@@ -48,82 +48,81 @@
 
 <body>
 
-    <h1>MealPrep Voice</h1>
+<h1>MealPrep Voice</h1>
 
-    <button onclick="startVoice()">🎤 Parla</button>
+<button onclick="startVoice()">🎤 Parla</button>
 
-    <div id="testo"></div>
-    <div id="stato"></div>
+<div id="testo"></div>
+<div id="stato"></div>
 
-    <script>
+<script>
 
-        const WEBHOOK = "https://script.google.com/macros/s/AKfycbz-Ne99jtO9uIy0ypXGrLyrtbbGvd9arkHZAFaff9YfggDqmbppyqaSBhOcpamDC--c/exec";
+const WEBHOOK =
+"https://script.google.com/macros/s/AKfycbz-Ne99jtO9uIy0ypXGrLyrtbbGvd9arkHZAFaff9YfggDqmbppyqaSBhOcpamDC--c/exec";
 
-        function startVoice() {
+function startVoice() {
+
+    document.getElementById("stato").innerText =
+        "🎤 Microfono attivo...";
+
+    const recognition =
+        new webkitSpeechRecognition();
+
+    recognition.lang = "it-IT";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = async function(event) {
+
+        const comando =
+            event.results[0][0].transcript;
+
+        alert("Hai detto: " + comando);
+
+        document.getElementById("testo").innerText =
+            comando;
+
+        try {
+
+            await fetch(WEBHOOK, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    utente: "Andrea",
+                    comando: comando
+                })
+            });
+
+            alert("INVIO ESEGUITO");
 
             document.getElementById("stato").innerText =
-                "🎤 Microfono attivo...";
+                "✅ Comando inviato";
 
-            const recognition =
-                new webkitSpeechRecognition();
+        }
+        catch (errore) {
 
-            recognition.lang = "it-IT";
-            recognition.continuous = false;
-            recognition.interimResults = false;
+            alert("Errore: " + errore);
 
-            recognition.onresult = async function (event) {
+            document.getElementById("stato").innerText =
+                "❌ Errore invio";
 
-                const comando =
-                    event.results[0][0].transcript;
-
-                alert("Hai detto: " + comando);
-
-                document.getElementById("testo").innerText =
-                    comando;
-
-                try {
-
-                    const response =
-                        await fetch(WEBHOOK, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                utente: "Andrea",
-                                comando: comando
-                            })
-                        });
-
-                    const risultato =
-                        await response.text();
-
-                    alert("Risposta server: " + risultato);
-
-                    document.getElementById("stato").innerText =
-                        "✅ Inviato";
-
-                }
-                catch (errore) {
-
-                    alert("Errore: " + errore);
-
-                    document.getElementById("stato").innerText =
-                        "❌ Errore";
-
-                }
-            };
-
-            recognition.onerror = function (event) {
-
-                alert("Errore microfono: " + event.error);
-
-            };
-
-            recognition.start();
         }
 
-    </script>
+    };
+
+    recognition.onerror = function(event) {
+
+        alert("Errore microfono: " + event.error);
+
+    };
+
+    recognition.start();
+}
+
+</script>
 
 </body>
 
