@@ -218,7 +218,7 @@ async function inviaComando(comando){
 
     }
 
-    if(cmd.includes("meal prep")){
+    if(cmd.includes("mealprep")){
 
         window.open(
             WEBHOOK + "?action=mealprep",
@@ -226,7 +226,7 @@ async function inviaComando(comando){
         );
 
         document.getElementById("stato").innerText =
-            "🍱 Apertura meal prep";
+            "🍱 Apertura mealprep";
 
         return;
 
