@@ -76,7 +76,17 @@ button:hover{
 <div id="testo"></div>
 <div id="countdown"></div>
 <div id="stato"></div>
-
+<div id="report" style="
+    display:none;
+    max-width:600px;
+    margin:30px auto;
+    text-align:left;
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+">
+</div>
 <button id="annullaBtn" onclick="annullaInvio()">
 ❌ ANNULLA
 </button>
@@ -84,7 +94,9 @@ button:hover{
 <script>
 
 const WEBHOOK =
-"https://script.google.com/macros/s/AKfycbz-Ne99jtO9uIy0ypXGrLyrtbbGvd9arkHZAFaff9YfggDqmbppyqaSBhOcpamDC--c/exec";
+"https://script.google.com/macros/s/AKfycbxIui9VudClKRLR1ENnuuGGIylPYs5xQE0BGcSAWms/exec";
+
+const REPORT_API = WEBHOOK;
 
 let timerInvio = null;
 let timerCountdown = null;
@@ -92,10 +104,10 @@ let comandoDaInviare = "";
 
 function startVoice(){
 
-    if (
+    if(
         comandoDaInviare !== "" &&
         timerInvio !== null
-    ) {
+    ){
 
         clearTimeout(timerInvio);
         clearInterval(timerCountdown);
@@ -170,6 +182,7 @@ function startVoice(){
     };
 
     recognition.start();
+
 }
 
 function annullaInvio(){
@@ -188,7 +201,105 @@ function annullaInvio(){
 
 }
 
+async function mostraListaSpesa(){
+
+    const response =
+        await fetch(
+            REPORT_API +
+            "?action=shopping"
+        );
+
+    const dati =
+        await response.json();
+
+    let html =
+        "<h2>🛒 Lista Spesa</h2>";
+
+    dati.elementi.forEach(item => {
+
+        html += `
+            <div style="margin:10px 0;">
+                <label>
+                    <input type="checkbox">
+                    ${item}
+                </label>
+            </div>
+        `;
+
+    });
+
+    document.getElementById("report").innerHTML =
+        html;
+
+    document.getElementById("report").style.display =
+        "block";
+
+}
+
+async function mostraMealPrep(){
+
+    const response =
+        await fetch(
+            REPORT_API +
+            "?action=mealprep"
+        );
+
+    const dati =
+        await response.json();
+
+    let html =
+        "<h2>🍱 Meal Prep</h2>";
+
+    dati.elementi.forEach(item => {
+
+        html += `
+            <div style="margin:10px 0;">
+                <label>
+                    <input type="checkbox">
+                    ${item}
+                </label>
+            </div>
+        `;
+
+    });
+
+    document.getElementById("report").innerHTML =
+        html;
+
+    document.getElementById("report").style.display =
+        "block";
+
+}
+
 async function inviaComando(comando){
+
+    if(
+        comando.toLowerCase() ===
+        "report lista spesa"
+    ){
+
+        await mostraListaSpesa();
+
+        document.getElementById("stato").innerText =
+            "🛒 Report generato";
+
+        return;
+
+    }
+
+    if(
+        comando.toLowerCase() ===
+        "report meal prep"
+    ){
+
+        await mostraMealPrep();
+
+        document.getElementById("stato").innerText =
+            "🍱 Report generato";
+
+        return;
+
+    }
 
     clearInterval(timerCountdown);
 
@@ -226,6 +337,7 @@ async function inviaComando(comando){
             "❌ Errore invio";
 
     }
+
 }
 
 </script>
