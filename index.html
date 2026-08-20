@@ -92,6 +92,23 @@ let comandoDaInviare = "";
 
 function startVoice(){
 
+    if (
+        comandoDaInviare !== "" &&
+        timerInvio !== null
+    ) {
+
+        clearTimeout(timerInvio);
+        clearInterval(timerCountdown);
+
+        const comandoPrecedente =
+            comandoDaInviare;
+
+        comandoDaInviare = "";
+
+        inviaComando(comandoPrecedente);
+
+    }
+
     document.getElementById("stato").innerText =
         "🎤 Microfono attivo...";
 
