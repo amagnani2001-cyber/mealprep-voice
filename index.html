@@ -226,19 +226,12 @@ function mostraListaSpesa(){
         "block";
 
     document.getElementById("report").innerHTML =
-        `
-        REPORT_API}?action=shopping"
+        
+        <iframe
+            src="${REPORT_API}?action=shopping"
             style="
                 width:100%;
-                height:500px;
-                border:none;
-                border-radius:10px;
-                background:white;
-            ">
-        </iframe>
-        `;
-
-    document.getElementById("stato").innerText =
+    
         "🛒 Report generato";
 
 }
@@ -252,7 +245,17 @@ function mostraMealPrep(){
         
         <iframe
             src="${REPORT_API}?action=mealprep"
-            styleato").innerText =
+            style="
+                width:100%;
+                height:500px;
+                border:none;
+                border-radius:10px;
+   
+            ">
+        </iframe>
+        ;
+
+    document.getElementById("stato").innerText =
         "🍱 Report generato";
 
 }
@@ -274,18 +277,14 @@ async function inviaComando(comando){
     const cmd =
         comando.toLowerCase().trim();
 
-    if(
-        cmd.includes("lista spesa")
-    ){
+    if(cmd.includes("lista spesa")){
 
         mostraListaSpesa();
         return;
 
     }
 
-    if(
-        cmd.includes("meal prep")
-    ){
+    if(cmd.includes("meal prep")){
 
         mostraMealPrep();
         return;
@@ -294,22 +293,17 @@ async function inviaComando(comando){
 
     try{
 
-        await fetch(
-            WEBHOOK,
-            {
-                method:"POST",
-                mode:"no-cors",
-
-                headers:{
-                    "Content-Type":"application/json"
-                },
-
-                body:JSON.stringify({
-                    utente:"Andrea",
-                    comando:comando
-                })
-            }
-        );
+        await fetch(WEBHOOK,{
+            method:"POST",
+            mode:"no-cors",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                utente:"Andrea",
+                comando:comando
+            })
+        });
 
         document.getElementById("stato").innerText =
             "✅ Comando inviato";
