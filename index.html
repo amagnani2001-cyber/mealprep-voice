@@ -76,7 +76,10 @@ button:hover{
 <div id="testo"></div>
 <div id="countdown"></div>
 <div id="stato"></div>
-<div id="report" style="
+
+<div
+    id="report"
+    style="
     display:none;
     max-width:600px;
     margin:30px auto;
@@ -87,6 +90,7 @@ button:hover{
     box-shadow:0 0 10px rgba(0,0,0,.1);
 ">
 </div>
+
 <button id="annullaBtn" onclick="annullaInvio()">
 ❌ ANNULLA
 </button>
@@ -119,6 +123,7 @@ function startVoice(){
 
         inviaComando(comandoPrecedente);
 
+        return;
     }
 
     document.getElementById("stato").innerText =
@@ -151,7 +156,7 @@ function startVoice(){
         let secondi = 5;
 
         document.getElementById("countdown").innerText =
-            "Invio automatico tra " + secondi + " secondi";
+            "Invio automatico tra 5 secondi";
 
         timerCountdown = setInterval(function(){
 
@@ -160,7 +165,17 @@ function startVoice(){
             if(secondi > 0){
 
                 document.getElementById("countdown").innerText =
-                    "Invio automatico tra " + secondi + " secondi";
+                    "Invio automatico tra " +
+                    secondi +
+                    " secondi";
+
+            }
+            else{
+
+                clearInterval(timerCountdown);
+
+                document.getElementById("countdown").innerText =
+                    "Invio in corso...";
 
             }
 
@@ -177,7 +192,8 @@ function startVoice(){
     recognition.onerror = function(event){
 
         document.getElementById("stato").innerText =
-            "❌ Errore microfono: " + event.error;
+            "❌ Errore microfono: " +
+            event.error;
 
     };
 
@@ -190,11 +206,14 @@ function annullaInvio(){
     clearTimeout(timerInvio);
     clearInterval(timerCountdown);
 
+    timerInvio = null;
+    timerCountdown = null;
+    comandoDaInviare = "";
+
     document.getElementById("countdown").innerText =
         "❌ Invio annullato";
 
-    document.getElementById("stato").innerText =
-        "";
+    document.getElementById("stato").innerText = "";
 
     document.getElementById("annullaBtn").style.display =
         "none";
@@ -203,75 +222,121 @@ function annullaInvio(){
 
 async function mostraListaSpesa(){
 
-    const response =
-        await fetch(
-            REPORT_API +
-            "?action=shopping"
-        );
+    try{
 
-    const dati =
-        await response.json();
+        const response =
+            await fetch(
+                REPORT_API +
+                "?action=shopping"
+            );
 
-    let html =
-        "<h2>🛒 Lista Spesa</h2>";
+        const dati =
+            await response.json();
 
-    dati.elementi.forEach(item => {
+        let html =
+            "<h2>🛒 Lista Spesa</h2>";
 
-        html += `
-            <div style="margin:10px 0;">
-                <label>
-                    <input type="checkbox">
-                    ${item}
-                </label>
-            </div>
-        `;
+        if(dati.elementi.length === 0){
 
-    });
+            html +=
+                "<p>Nessun prodotto da acquistare.</p>";
 
-    document.getElementById("report").innerHTML =
-        html;
+        }
 
-    document.getElementById("report").style.display =
-        "block";
+        dati.elementi.forEach(item => {
+
+            html += `
+                <div style="margin:10px 0;">
+                    <label>
+                        <input type="checkbox">
+                        ${item}
+                    </label>
+                </div>
+            `;
+
+        });
+
+        document.getElementById("report").innerHTML =
+            html;
+
+        document.getElementById("report").style.display =
+            "block";
+
+    }
+    catch(err){
+
+        document.getElementById("stato").innerText =
+            "❌ Errore caricamento lista spesa";
+
+    }
 
 }
 
 async function mostraMealPrep(){
 
-    const response =
-        await fetch(
-            REPORT_API +
-            "?action=mealprep"
-        );
+    try{
 
-    const dati =
-        await response.json();
+        const response =
+            await fetch(
+                REPORT_API +
+                "?action=mealprep"
+            );
 
-    let html =
-        "<h2>🍱 Meal Prep</h2>";
+        const dati =
+            await response.json();
 
-    dati.elementi.forEach(item => {
+        let html =
+            "<h2>🍱 Meal Prep</h2>";
 
-        html += `
-            <div style="margin:10px 0;">
-                <label>
-                    <input type="checkbox">
-                    ${item}
-                </label>
-            </div>
-        `;
+        if(dati.elementi.length === 0){
 
-    });
+            html +=
+                "<p>Nessuna ricetta in attesa.</p>";
 
-    document.getElementById("report").innerHTML =
-        html;
+        }
 
-    document.getElementById("report").style.display =
-        "block";
+        dati.elementi.forEach(item => {
+
+            html += `
+                <div style="margin:10px 0;">
+                    <label>
+                        <input type="checkbox">
+                        ${item}
+                    </label>
+                </div>
+            `;
+
+        });
+
+        document.getElementById("report").innerHTML =
+            html;
+
+        document.getElementById("report").style.display =
+            "block";
+
+    }
+    catch(err){
+
+        document.getElementById("stato").innerText =
+            "❌ Errore caricamento meal prep";
+
+    }
 
 }
 
 async function inviaComando(comando){
+
+    clearTimeout(timerInvio);
+    clearInterval(timerCountdown);
+
+    timerInvio = null;
+    timerCountdown = null;
+
+    document.getElementById("countdown").innerText =
+        "";
+
+    document.getElementById("annullaBtn").style.display =
+        "none";
 
     if(
         comando.toLowerCase() ===
@@ -301,14 +366,6 @@ async function inviaComando(comando){
 
     }
 
-    clearInterval(timerCountdown);
-
-    document.getElementById("countdown").innerText =
-        "";
-
-    document.getElementById("annullaBtn").style.display =
-        "none";
-
     try{
 
         await fetch(WEBHOOK,{
@@ -337,6 +394,8 @@ async function inviaComando(comando){
             "❌ Errore invio";
 
     }
+
+    comandoDaInviare = "";
 
 }
 
