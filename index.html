@@ -224,33 +224,58 @@ async function mostraListaSpesa(){
 
     try{
 
-        document.getElementById("stato").innerText =
-            "Connessione al report...";
-
         const response =
             await fetch(
                 REPORT_API + "?action=shopping"
             );
 
-        document.getElementById("stato").innerText =
-            "Risposta ricevuta";
-
         const testo =
             await response.text();
 
+        const dati =
+            JSON.parse(testo);
+
+        let html =
+            "<h2>🛒 Lista Spesa</h2>";
+
+        if(
+            !dati.elementi ||
+            dati.elementi.length === 0
+        ){
+            html +=
+                "<p>Nessun prodotto da acquistare.</p>";
+        }
+        else{
+
+            dati.elementi.forEach(item => {
+
+                html +=
+                    "<div style='margin:10px 0'>✅ " +
+                    item +
+                    "</div>";
+
+            });
+
+        }
+
+        document.getElementById("report").innerHTML =
+            html;
+
+        document.getElementById("report").style.display =
+            "block";
+
         document.getElementById("stato").innerText =
-            testo;
+            "🛒 Report generato";
 
     }
     catch(err){
 
         document.getElementById("stato").innerText =
-            "ERRORE: " + err.message;
+            err.message;
 
     }
 
 }
-
 async function mostraMealPrep(){
 
     try{
