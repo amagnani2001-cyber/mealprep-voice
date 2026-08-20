@@ -329,14 +329,38 @@ async function inviaComando(comando){
     clearTimeout(timerInvio);
     clearInterval(timerCountdown);
 
-    timerInvio = null;
-    timerCountdown = null;
+    document.getElementById("countdown").innerText = "";
+    document.getElementById("annullaBtn").style.display = "none";
 
-    document.getElementById("countdown").innerText =
-        "";
+    document.getElementById("stato").innerText =
+        "COMANDO: [" + comando + "]";
 
-    document.getElementById("annullaBtn").style.display =
-        "none";
+    const cmd =
+        comando.toLowerCase().trim();
+
+    if(cmd.includes("lista")){
+
+        document.getElementById("stato").innerText =
+            "RILEVATO LISTA SPESA";
+
+        await mostraListaSpesa();
+
+        return;
+    }
+
+    if(cmd.includes("meal")){
+
+        document.getElementById("stato").innerText =
+            "RILEVATO MEAL PREP";
+
+        await mostraMealPrep();
+
+        return;
+    }
+
+    document.getElementById("stato").innerText =
+        "NON RICONOSCIUTO: " + cmd;
+}
 
     if(
         comando.toLowerCase() ===
