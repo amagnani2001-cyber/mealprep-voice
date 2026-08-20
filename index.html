@@ -220,111 +220,40 @@ function annullaInvio(){
 
 }
 
-async function mostraListaSpesa(){
+function mostraListaSpesa(){
 
-    try{
+    document.getElementById("report").style.display =
+        "block";
 
-        const response =
-            await fetch(
-                REPORT_API + "?action=shopping"
-            );
+    document.getElementById("report").innerHTML =
+        `
+        REPORT_API}?action=shopping"
+            style="
+                width:100%;
+                height:500px;
+                border:none;
+                border-radius:10px;
+                background:white;
+            ">
+        </iframe>
+        `;
 
-        const testo =
-            await response.text();
-
-        const dati =
-            JSON.parse(testo);
-
-        let html =
-            "<h2>🛒 Lista Spesa</h2>";
-
-        if(
-            !dati.elementi ||
-            dati.elementi.length === 0
-        ){
-            html +=
-                "<p>Nessun prodotto da acquistare.</p>";
-        }
-        else{
-
-            dati.elementi.forEach(item => {
-
-                html +=
-                    "<div style='margin:10px 0'>✅ " +
-                    item +
-                    "</div>";
-
-            });
-
-        }
-
-        document.getElementById("report").innerHTML =
-            html;
-
-        document.getElementById("report").style.display =
-            "block";
-
-        document.getElementById("stato").innerText =
-            "🛒 Report generato";
-
-    }
-    catch(err){
-
-        document.getElementById("stato").innerText =
-            err.message;
-
-    }
+    document.getElementById("stato").innerText =
+        "🛒 Report generato";
 
 }
-async function mostraMealPrep(){
 
-    try{
+function mostraMealPrep(){
 
-        const response =
-            await fetch(
-                REPORT_API +
-                "?action=mealprep"
-            );
+    document.getElementById("report").style.display =
+        "block";
 
-        const dati =
-            await response.json();
-
-        let html =
-            "<h2>🍱 Meal Prep</h2>";
-
-        if(dati.elementi.length === 0){
-
-            html +=
-                "<p>Nessuna ricetta in attesa.</p>";
-
-        }
-
-        dati.elementi.forEach(item => {
-
-            html += `
-                <div style="margin:10px 0;">
-                    <label>
-                        <input type="checkbox">
-                        ${item}
-                    </label>
-                </div>
-            `;
-
-        });
-
-        document.getElementById("report").innerHTML =
-            html;
-
-        document.getElementById("report").style.display =
-            "block";
-
-    }
-    catch(err){
-
-        document.getElementById("stato").innerText =
-            "❌ Errore caricamento meal prep";
-
-    }
+    document.getElementById("report").innerHTML =
+        
+        <iframe
+            src="${REPORT_API}?action=mealprep"
+            styleato").innerText =
+        "🍱 Report generato";
 
 }
 
@@ -336,8 +265,11 @@ async function inviaComando(comando){
     timerInvio = null;
     timerCountdown = null;
 
-    document.getElementById("countdown").innerText = "";
-    document.getElementById("annullaBtn").style.display = "none";
+    document.getElementById("countdown").innerText =
+        "";
+
+    document.getElementById("annullaBtn").style.display =
+        "none";
 
     const cmd =
         comando.toLowerCase().trim();
@@ -346,7 +278,7 @@ async function inviaComando(comando){
         cmd.includes("lista spesa")
     ){
 
-        await mostraListaSpesa();
+        mostraListaSpesa();
         return;
 
     }
@@ -355,24 +287,29 @@ async function inviaComando(comando){
         cmd.includes("meal prep")
     ){
 
-        await mostraMealPrep();
+        mostraMealPrep();
         return;
 
     }
 
     try{
 
-        await fetch(WEBHOOK,{
-            method:"POST",
-            mode:"no-cors",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                utente:"Andrea",
-                comando:comando
-            })
-        });
+        await fetch(
+            WEBHOOK,
+            {
+                method:"POST",
+                mode:"no-cors",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+                    utente:"Andrea",
+                    comando:comando
+                })
+            }
+        );
 
         document.getElementById("stato").innerText =
             "✅ Comando inviato";
