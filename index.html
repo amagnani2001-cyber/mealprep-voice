@@ -224,49 +224,28 @@ async function mostraListaSpesa(){
 
     try{
 
+        document.getElementById("stato").innerText =
+            "Connessione al report...";
+
         const response =
             await fetch(
-                REPORT_API +
-                "?action=shopping"
+                REPORT_API + "?action=shopping"
             );
 
-        const dati =
-            await response.json();
+        document.getElementById("stato").innerText =
+            "Risposta ricevuta";
 
-        let html =
-            "<h2>🛒 Lista Spesa</h2>";
+        const testo =
+            await response.text();
 
-        if(dati.elementi.length === 0){
-
-            html +=
-                "<p>Nessun prodotto da acquistare.</p>";
-
-        }
-
-        dati.elementi.forEach(item => {
-
-            html += `
-                <div style="margin:10px 0;">
-                    <label>
-                        <input type="checkbox">
-                        ${item}
-                    </label>
-                </div>
-            `;
-
-        });
-
-        document.getElementById("report").innerHTML =
-            html;
-
-        document.getElementById("report").style.display =
-            "block";
+        document.getElementById("stato").innerText =
+            testo;
 
     }
     catch(err){
 
         document.getElementById("stato").innerText =
-            "❌ Errore caricamento lista spesa";
+            "ERRORE: " + err.message;
 
     }
 
