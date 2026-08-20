@@ -329,63 +329,29 @@ async function inviaComando(comando){
     clearTimeout(timerInvio);
     clearInterval(timerCountdown);
 
+    timerInvio = null;
+    timerCountdown = null;
+
     document.getElementById("countdown").innerText = "";
     document.getElementById("annullaBtn").style.display = "none";
-
-    document.getElementById("stato").innerText =
-        "COMANDO: [" + comando + "]";
 
     const cmd =
         comando.toLowerCase().trim();
 
-    if(cmd.includes("lista")){
-
-        document.getElementById("stato").innerText =
-            "RILEVATO LISTA SPESA";
-
-        await mostraListaSpesa();
-
-        return;
-    }
-
-    if(cmd.includes("meal")){
-
-        document.getElementById("stato").innerText =
-            "RILEVATO MEAL PREP";
-
-        await mostraMealPrep();
-
-        return;
-    }
-
-    document.getElementById("stato").innerText =
-        "NON RICONOSCIUTO: " + cmd;
-}
-
     if(
-        comando.toLowerCase() ===
-        "report lista spesa"
+        cmd.includes("lista spesa")
     ){
 
         await mostraListaSpesa();
-
-        document.getElementById("stato").innerText =
-            "🛒 Report generato";
-
         return;
 
     }
 
     if(
-        comando.toLowerCase() ===
-        "report meal prep"
+        cmd.includes("meal prep")
     ){
 
         await mostraMealPrep();
-
-        document.getElementById("stato").innerText =
-            "🍱 Report generato";
-
         return;
 
     }
@@ -393,19 +359,15 @@ async function inviaComando(comando){
     try{
 
         await fetch(WEBHOOK,{
-
             method:"POST",
             mode:"no-cors",
-
             headers:{
                 "Content-Type":"application/json"
             },
-
             body:JSON.stringify({
                 utente:"Andrea",
                 comando:comando
             })
-
         });
 
         document.getElementById("stato").innerText =
