@@ -77,20 +77,6 @@ button:hover{
 <div id="countdown"></div>
 <div id="stato"></div>
 
-<div
-    id="report"
-    style="
-    display:none;
-    max-width:600px;
-    margin:30px auto;
-    text-align:left;
-    background:white;
-    border-radius:10px;
-    padding:15px;
-    box-shadow:0 0 10px rgba(0,0,0,.1);
-">
-</div>
-
 <button id="annullaBtn" onclick="annullaInvio()">
 ❌ ANNULLA
 </button>
@@ -98,33 +84,13 @@ button:hover{
 <script>
 
 const WEBHOOK =
-"https://script.google.com/macros/s/AKfycbxIui9VudClKRLR1ENnuuGGIylPYs5xQE0BGcSAWms/exec";
-
-const REPORT_API = WEBHOOK;
+"https://script.google.com/macros/s/AKfycbz-Ne99jtO9uIy0ypXGrLyrtbbGvd9arkHZAFaff9YfggDqmbppyqaSBhOcpamDC--c/exec";
 
 let timerInvio = null;
 let timerCountdown = null;
 let comandoDaInviare = "";
 
 function startVoice(){
-
-    if(
-        comandoDaInviare !== "" &&
-        timerInvio !== null
-    ){
-
-        clearTimeout(timerInvio);
-        clearInterval(timerCountdown);
-
-        const comandoPrecedente =
-            comandoDaInviare;
-
-        comandoDaInviare = "";
-
-        inviaComando(comandoPrecedente);
-
-        return;
-    }
 
     document.getElementById("stato").innerText =
         "🎤 Microfono attivo...";
@@ -213,50 +179,11 @@ function annullaInvio(){
     document.getElementById("countdown").innerText =
         "❌ Invio annullato";
 
-    document.getElementById("stato").innerText = "";
+    document.getElementById("stato").innerText =
+        "";
 
     document.getElementById("annullaBtn").style.display =
         "none";
-
-}
-
-function mostraListaSpesa(){
-
-    document.getElementById("report").style.display =
-        "block";
-
-    document.getElementById("report").innerHTML =
-        
-        <iframe
-            src="${REPORT_API}?action=shopping"
-            style="
-                width:100%;
-    
-        "🛒 Report generato";
-
-}
-
-function mostraMealPrep(){
-
-    document.getElementById("report").style.display =
-        "block";
-
-    document.getElementById("report").innerHTML =
-        
-        <iframe
-            src="${REPORT_API}?action=mealprep"
-            style="
-                width:100%;
-                height:500px;
-                border:none;
-                border-radius:10px;
-   
-            ">
-        </iframe>
-        ;
-
-    document.getElementById("stato").innerText =
-        "🍱 Report generato";
 
 }
 
@@ -279,14 +206,28 @@ async function inviaComando(comando){
 
     if(cmd.includes("lista spesa")){
 
-        mostraListaSpesa();
+        window.open(
+            WEBHOOK + "?action=shopping",
+            "_blank"
+        );
+
+        document.getElementById("stato").innerText =
+            "🛒 Apertura lista spesa";
+
         return;
 
     }
 
     if(cmd.includes("meal prep")){
 
-        mostraMealPrep();
+        window.open(
+            WEBHOOK + "?action=mealprep",
+            "_blank"
+        );
+
+        document.getElementById("stato").innerText =
+            "🍱 Apertura meal prep";
+
         return;
 
     }
@@ -294,15 +235,19 @@ async function inviaComando(comando){
     try{
 
         await fetch(WEBHOOK,{
+
             method:"POST",
             mode:"no-cors",
+
             headers:{
                 "Content-Type":"application/json"
             },
+
             body:JSON.stringify({
                 utente:"Andrea",
                 comando:comando
             })
+
         });
 
         document.getElementById("stato").innerText =
