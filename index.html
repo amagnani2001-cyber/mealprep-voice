@@ -102,7 +102,7 @@ margin:15px auto;
 
 <button
 onclick="window.open(WEBHOOK+'?action=shopping','_blank')">
-📋 Report lista spesa
+📋 lista spesa
 </button>
 
 <button onclick="inviaComando('preparati pasti')">
@@ -111,7 +111,7 @@ onclick="window.open(WEBHOOK+'?action=shopping','_blank')">
 
 <button
 onclick="window.open(WEBHOOK+'?action=mealprep','_blank')">
-📋 Report pasti
+📋 Lista pasti
 </button>
 
 </div>
@@ -230,7 +230,7 @@ text-align:left;
 </tr>
 
 <tr>
-<td>📋 Report spesa</td>
+<td>📋 Lista spesa</td>
 <td>apre checklist</td>
 </tr>
 
@@ -254,7 +254,7 @@ text-align:left;
 </tr>
 
 <tr>
-<td>📋 Report pasti</td>
+<td>📋 Lista pasti</td>
 <td>apre checklist</td>
 </tr>
 
@@ -497,7 +497,7 @@ async function inviaComando(comando){
         );
 
         document.getElementById("stato").innerText =
-            "🍱 Apertura Pasti da preparare";
+            "🍱 Apertura Lista pasti";
 
         return;
 
