@@ -74,6 +74,63 @@ button:hover{
 <button onclick="startVoice()">🎤 Parla</button>
 
 <div id="testo"></div>
+<div style="
+max-width:600px;
+margin:20px auto;
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+">
+
+<h3>🛒 Prodotti da comprare</h3>
+
+<textarea
+id="listaProdotti"
+placeholder="Un prodotto per riga"
+style="
+width:100%;
+height:120px;
+font-size:16px;
+">
+</textarea>
+
+<button
+onclick="aggiungiProdotti()"
+style="margin-top:10px;">
+✅ AGGIUNGI TUTTI
+</button>
+
+</div>
+
+<div style="
+max-width:600px;
+margin:20px auto;
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+">
+
+<h3>🍱 Pasti da preparare</h3>
+
+<textarea
+id="listaRicette"
+placeholder="Una ricetta per riga"
+style="
+width:100%;
+height:120px;
+font-size:16px;
+">
+</textarea>
+
+<button
+onclick="aggiungiRicette()"
+style="margin-top:10px;">
+✅ AGGIUNGI TUTTE
+</button>
+
+</div>
 <div id="countdown"></div>
 <div id="stato"></div>
 <div style="
@@ -255,6 +312,80 @@ function annullaInvio(){
 
     document.getElementById("annullaBtn").style.display =
         "none";
+
+}
+async function aggiungiProdotti(){
+
+    const righe =
+        document
+        .getElementById("listaProdotti")
+        .value
+        .split("\n")
+        .map(v => v.trim())
+        .filter(v => v !== "");
+
+    for(const prodotto of righe){
+
+        await fetch(WEBHOOK,{
+
+            method:"POST",
+            mode:"no-cors",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                utente:"Andrea",
+                comando:"comprare " + prodotto
+            })
+
+        });
+
+    }
+
+    document.getElementById("listaProdotti").value =
+        "";
+
+    document.getElementById("stato").innerText =
+        "✅ Prodotti aggiunti";
+
+}
+async function aggiungiRicette(){
+
+    const righe =
+        document
+        .getElementById("listaRicette")
+        .value
+        .split("\n")
+        .map(v => v.trim())
+        .filter(v => v !== "");
+
+    for(const ricetta of righe){
+
+        await fetch(WEBHOOK,{
+
+            method:"POST",
+            mode:"no-cors",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                utente:"Andrea",
+                comando:"preparare " + ricetta
+            })
+
+        });
+
+    }
+
+    document.getElementById("listaRicette").value =
+        "";
+
+    document.getElementById("stato").innerText =
+        "✅ Ricette aggiunte";
 
 }
 
