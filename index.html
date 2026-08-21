@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MealPrep Voice</title>
+<title>Carrello Spesa</title>
 
 <style>
 
@@ -69,9 +69,55 @@ button:hover{
 
 <body>
 
-<h1>MealPrep Voice</h1>
+<h2 style="display:inline-block;">
+🛒 Carrello Spesa
+</h2>
 
-<button onclick="startVoice()">🎤 Parla</button>
+<div style="
+display:flex;
+justify-content:center;
+align-items:center;
+gap:15px;
+margin-bottom:15px;
+">
+
+<h2 style="margin:0;">
+🛒 Carrello Spesa
+</h2>
+
+<button onclick="startVoice()">
+🎤 Parla
+</button>
+
+</div>
+
+<div style="
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+max-width:600px;
+margin:15px auto;
+">
+
+<button onclick="inviaComando('spesa fatta')">
+✅ Spesa fatta
+</button>
+
+<button
+onclick="window.open(WEBHOOK+'?action=shopping','_blank')">
+📋 Report lista spesa
+</button>
+
+<button onclick="inviaComando('preparati pasti')">
+✅ Preparati pasti
+</button>
+
+<button
+onclick="window.open(WEBHOOK+'?action=mealprep','_blank')">
+📋 Report pasti
+</button>
+
+</div>
 
 <div id="testo"></div>
 <div style="
@@ -90,7 +136,7 @@ id="listaProdotti"
 placeholder="Un prodotto per riga"
 style="
 width:100%;
-height:120px;
+height:px;
 font-size:16px;
 ">
 </textarea>
@@ -119,7 +165,7 @@ id="listaRicette"
 placeholder="Una ricetta per riga"
 style="
 width:100%;
-height:120px;
+height:70px;
 font-size:16px;
 ">
 </textarea>
