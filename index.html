@@ -487,9 +487,10 @@ async function inviaComando(comando){
     }
 
     if(
-    cmd.includes("pasti da preparare") ||
-    cmd.includes("report pasti da preparare")
-){
+        cmd.includes("lista pasti") ||
+        cmd.includes("pasti da preparare") ||
+        cmd.includes("report pasti da preparare")
+    ){
 
         window.open(
             WEBHOOK + "?action=mealprep",
