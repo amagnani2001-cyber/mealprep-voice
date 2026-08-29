@@ -118,7 +118,7 @@ onclick="window.open(WEBHOOK+'?action=mealprep','_blank')">
 
 <div id="testo"></div>
 
-    <div style="
+<div style="
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px;
@@ -196,6 +196,87 @@ font-size:14px;
 
 </div>
 
+<div style="
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+max-width:900px;
+margin:15px auto;
+">
+
+<div style="
+background:white;
+padding:10px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+">
+
+<h3 style="margin-top:0;">
+✅ Prodotti comprati
+</h3>
+
+<textarea
+id="listaComprati"
+placeholder="Latte
+Pane
+Acqua"
+style="
+width:100%;
+height:40px;
+font-size:15px;
+resize:vertical;
+">
+</textarea>
+
+<button
+onclick="compratiProdotti()"
+style="
+margin-top:8px;
+padding:8px 12px;
+font-size:14px;
+">
+✅ RIMUOVI TUTTI
+</button>
+
+</div>
+
+<div style="
+background:white;
+padding:10px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+">
+
+<h3 style="margin-top:0;">
+✅ Pasti preparati
+</h3>
+
+<textarea
+id="listaPreparati"
+placeholder="Lasagne
+Pollo
+Riso"
+style="
+width:100%;
+height:40px;
+font-size:15px;
+resize:vertical;
+">
+</textarea>
+
+<button
+onclick="preparatiRicette()"
+style="
+margin-top:8px;
+padding:8px 12px;
+font-size:14px;
+">
+✅ RIMUOVI TUTTI
+</button>
+
+</div>
+
+</div>
 
 <div id="countdown"></div>
 <div id="stato"></div>
@@ -454,7 +535,79 @@ async function aggiungiRicette(){
         "✅ Ricette aggiunte";
 
 }
+async function compratiProdotti(){
 
+    const righe =
+        document
+        .getElementById("listaComprati")
+        .value
+        .split("\n")
+        .map(v => v.trim())
+        .filter(v => v !== "");
+
+    for(const prodotto of righe){
+
+        await fetch(WEBHOOK,{
+
+            method:"POST",
+            mode:"no-cors",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                utente:"Andrea",
+                comando:"comprato " + prodotto
+            })
+
+        });
+
+    }
+
+    document.getElementById("listaComprati").value = "";
+
+    document.getElementById("stato").innerText =
+        "✅ Prodotti rimossi";
+
+}
+
+async function preparatiRicette(){
+
+    const righe =
+        document
+        .getElementById("listaPreparati")
+        .value
+        .split("\n")
+        .map(v => v.trim())
+        .filter(v => v !== "");
+
+    for(const ricetta of righe){
+
+        await fetch(WEBHOOK,{
+
+            method:"POST",
+            mode:"no-cors",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                utente:"Andrea",
+                comando:"preparato " + ricetta
+            })
+
+        });
+
+    }
+
+    document.getElementById("listaPreparati").value = "";
+
+    document.getElementById("stato").innerText =
+        "✅ Pasti rimossi";
+
+}
 async function inviaComando(comando){
 
     clearTimeout(timerInvio);
